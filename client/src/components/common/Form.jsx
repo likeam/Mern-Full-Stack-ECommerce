@@ -1,3 +1,4 @@
+import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import {
@@ -7,10 +8,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Textarea } from "../ui/textarea";
 
-const CommonForm = ({ formControls }) => {
+const CommonForm = ({
+  formControls,
+  formData,
+  setFormData,
+  onSubmit,
+  buttonText,
+}) => {
   const renderInputsByComponentType = (getConrolItem) => {
     let element = null;
+    const value = formData[getConrolItem.name] || "";
+
     switch (getConrolItem.componentType) {
       case "input":
         element = (
@@ -19,20 +29,37 @@ const CommonForm = ({ formControls }) => {
             placeholder={getConrolItem.placeholder}
             id={getConrolItem.name}
             type={getConrolItem.type}
+            value={value}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getConrolItem.name]: e.target.value,
+              })
+            }
           />
         );
 
         break;
       case "select":
         element = (
-          <Select>
+          <Select
+            onValueChange={(value) =>
+              setFormData({
+                ...formData,
+                [getConrolItem.name]: value,
+              })
+            }
+            value={value}
+          >
             <SelectTrigger className=" w-full">
               <SelectValue placeholder={getConrolItem.placeholder} />
             </SelectTrigger>
             <SelectContent>
               {getConrolItem.options && getConrolItem.options.length > 0
                 ? getConrolItem.options.map((optionItem) => (
-                    <SelectItem>{optionItem.label}</SelectItem>
+                    <SelectItem key={optionItem.id} value={optionItem.id}>
+                      {optionItem.label}
+                    </SelectItem>
                   ))
                 : null}
             </SelectContent>
@@ -42,11 +69,18 @@ const CommonForm = ({ formControls }) => {
         break;
       case "textarea":
         element = (
-          <Input
+          <Textarea
             name={getConrolItem.name}
             placeholder={getConrolItem.placeholder}
             id={getConrolItem.name}
             type={getConrolItem.type}
+            value={value}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getConrolItem.name]: e.target.value,
+              })
+            }
           />
         );
 
@@ -59,15 +93,22 @@ const CommonForm = ({ formControls }) => {
             placeholder={getConrolItem.placeholder}
             id={getConrolItem.name}
             type={getConrolItem.type}
+            value={value}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                [getConrolItem.name]: e.target.value,
+              })
+            }
           />
         );
         break;
-    };
+    }
     return element;
   };
 
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <div className=" flex flex-col gap-3">
         {formControls.map((controlItem) => (
           <div className=" grid w-full gap-1.5" key={formControls.name}>
@@ -76,6 +117,9 @@ const CommonForm = ({ formControls }) => {
           </div>
         ))}
       </div>
+      <Button type="submit" className=" mt-2 w-full">
+        {buttonText || "Submit"}
+      </Button>
     </form>
   );
 };
