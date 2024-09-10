@@ -1,7 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
-const cookieParser = require("cookie-parser");
+const  express = require('express');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
+const AuthRouter = require('./routes/auth/AuthRouter.js');
+
 
 //Create a Database Connection
 mongoose
@@ -30,4 +32,6 @@ app.use(
 
 app.use(express.json());
 app.use(cookieParser());
+
+app.use('/api/auth', AuthRouter);
 app.listen(PORT, () => console.log("Server is now running on port " + PORT));
