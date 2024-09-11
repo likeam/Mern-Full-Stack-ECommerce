@@ -57,7 +57,7 @@ const CommonForm = ({
             <SelectContent>
               {getConrolItem.options && getConrolItem.options.length > 0
                 ? getConrolItem.options.map((optionItem) => (
-                    <SelectItem key={optionItem.id} value={optionItem.id}>
+                    <SelectItem key={optionItem.id}  value={optionItem.id}>
                       {optionItem.label}
                     </SelectItem>
                   ))
@@ -111,7 +111,7 @@ const CommonForm = ({
     <form onSubmit={onSubmit}>
       <div className=" flex flex-col gap-3">
         {formControls.map((controlItem) => (
-          <div className=" grid w-full gap-1.5" key={formControls.name}>
+          <div className=" grid w-full gap-1.5" key={controlItem.name}>
             <Label className=" mb-1">{controlItem.label}</Label>
             {renderInputsByComponentType(controlItem)}
           </div>
