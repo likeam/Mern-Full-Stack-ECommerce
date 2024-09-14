@@ -28,9 +28,7 @@ app.use(
     credentials: true,
   })
 );
-
-app.use(express.json());
 app.use(cookieParser());
-
-app.use('/api/auth', AuthRouter);
+app.use(express.json());
+app.use("/api/auth", AuthRouter);
 app.listen(PORT, () => console.log("Server is now running on port " + PORT));

@@ -19,7 +19,7 @@ export const registerUser = createAsyncThunk(
         withCredentials: true,
       }
     );
-
+    console.log(formData);
     return response.data;
   }
 );
