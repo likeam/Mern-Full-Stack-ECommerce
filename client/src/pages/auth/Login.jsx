@@ -1,21 +1,34 @@
+import { loginUser } from "@/store/auth-slice";
 import CommonForm from "../../components/common/Form";
 import { loginFormControls } from "@/config";
 import { useState } from "react"
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom"
+import { data } from "autoprefixer";
+
+
+const initialState = {
+  
+  email: '',
+  password: '',
+}
 
 
 
 function AuthLogin () {
   
-  const initialState = {
-  
-    email: '',
-    password: '',
-  }
+ 
 
   const [formData, setFormData] = useState(initialState);
+  const dispatch = useDispatch();
 
-  const onSubmit = () => {}
+  const onSubmit = (event) => {
+    event.preventDefault();
+    dispatch(loginUser(formData)).then((date) => {
+      console.log(data)
+    })
+
+  }
 
   return  <>
   <div className=" mx-auto w-full max-w-md space-y-6">
