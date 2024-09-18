@@ -4,7 +4,8 @@ import { loginFormControls } from "@/config";
 import { useState } from "react"
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom"
-import { data } from "autoprefixer";
+import { useToast } from "@/components/ui/use-toast";
+
 
 
 const initialState = {
@@ -21,11 +22,22 @@ function AuthLogin () {
 
   const [formData, setFormData] = useState(initialState);
   const dispatch = useDispatch();
+  const { toast } = useToast();
 
   const onSubmit = (event) => {
     event.preventDefault();
-    dispatch(loginUser(formData)).then((date) => {
-      console.log(data)
+    dispatch(loginUser(formData)).then((data) => {
+      console.log(data);
+      if(data?.payload?.success){
+        toast({
+          title: data?.payload?.message,
+        });
+      } else {
+        toast({ 
+          title: data?.payload?.message,
+          variant: "destructive",
+        })
+      }
     })
 
   }
