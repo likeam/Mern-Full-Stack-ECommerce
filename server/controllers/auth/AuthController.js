@@ -35,48 +35,85 @@ const registerUser = async (req, res) => {
   }
 };
 
+//login
 
-    //login
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-    const loginUser = async (req, res) => {
-    const { email, password } = req.body;
+  try {
+    const checkUser = await User.findOne({ email });
+    if (!checkUser)
+      return res.json({
+        success: false,
+        message: "User not found with this email",
+      });
+    const checkPasswordMatch = await bcrypt.compare(
+      password,
+      checkUser.password
+    );
+    if (!checkPasswordMatch)
+      return res.json({
+        success: false,
+        message: "Incorrect Password",
+      });
 
-    try {
-        const checkUser = await User.findOne({  email })
-        if(!checkUser) return res.json({ 
-          success: false,
-          message: "User not found with this email",
-        })
-        const isMatch = await bcrypt.compare(password, checkUser.password)
-        if(!isMatch) return res.json({ 
-          success: false,
-          message: "Incorrect Password",
-        })
-        const token = jwt.sign({
-          id: checkUser._id, role: checkUser.role, email: checkUser.email       }, 'CLIENT_SECRET_KEY', {expiresIn : '60m'})
-          res.cookies('token', token, {httOnly: true, secure : false}).json({
-            success: true,
-            message: "Login Successful",
-            token: token,
-            user: {
-              id: checkUser._id,
-              userName: checkUser.userName,
-              email: checkUser.email,
-              role: checkUser.role
-            }
-          })
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-        sucess: false,
-        message: "Some Error occured",
-        });
-    }
+    const token = jwt.sign(
+      {
+        id: checkUser._id,
+        role: checkUser.role,
+        email: checkUser.email,
+        userName: checkUser.userName,
+      },
+      "CLIENT_SECRET_KEY",
+      { expiresIn: "60m" }
+    );
+    res.cookie("token", token, { httpOnly: true, secure: false }).json({
+      success: true,
+      message: "Logged in successfully",
+      user: {
+        email: checkUser.email,
+        role: checkUser.role,
+        id: checkUser._id,
+        userName: checkUser.userName,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      sucess: false,
+      message: "Some Error occured",
+    });
+  }
 };
 
-//logout
+//logouta
+const logoutUser = (req, res) => {
+  res.clearCookie("token").json({
+    success: true,
+    message: "Logout Successful",
+  });
+};
 
 //auth middlawarer
 
-module.exports = { registerUser, loginUser };
+const authMiddleware = async (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token)
+    return res.status(401).json({
+      success: false,
+      message: "No token, authorization denied",
+    });
+
+  try {
+    const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.status(401).json({
+      success: false,
+      message: "Unauthorised user",
+    });
+  }
+};
+
+module.exports = { registerUser, loginUser, logoutUser, authMiddleware };

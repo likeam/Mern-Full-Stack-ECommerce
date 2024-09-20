@@ -14,6 +14,7 @@ const CheckAuth = ({ isAuthenticated, user, children }) => {
       }
     }
   }
+  console.log(location.pathname, isAuthenticated);
 
   if (
     !isAuthenticated &&
