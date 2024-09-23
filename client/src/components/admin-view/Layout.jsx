@@ -1,8 +1,11 @@
 import { Outlet } from "react-router-dom";
 import AdminHeader from "./Header";
 import AdminSidebar from "./Sidebar";
+import { useState } from "react";
 
 const AdminLayout = () => {
+  const [openSidebar, setOpenSidebar] = useState(true);
+
   return (
     <div className=" flex min-h-screen w-full">
       {/* admin sidebar */}
